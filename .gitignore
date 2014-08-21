@@ -2,3 +2,4 @@
 deb_dist
 dist
 jenkins_tools.egg-info
+*~
