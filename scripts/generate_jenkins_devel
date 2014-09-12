@@ -35,6 +35,7 @@ def main():
     parser.add_option("--delete", action="store_true", default=False)
     parser.add_option("--run", action="store_true", default=False)
     parser.add_option("--url-filter", dest="filter", default=None)
+    parser.add_option("--pull-requests", dest="pr", action="store_true", default=False)
     (options, args) = parser.parse_args()
 
     if len(args) != 1:
@@ -68,7 +69,7 @@ def main():
                 'url': repo.url,
                 'version': repo.version
             }
-	    if not options.filter is None:
+            if not options.filter is None:
                 if options.filter not in repo.url:
                     continue
             # TODO only works with one build file yet
@@ -85,7 +86,10 @@ def main():
     for s in sorted(devel.keys()):
         conf = devel[s]
         # replace forward slashes in repo names since they are not allowed in job names
-        job_name = "devel-%s-%s" % (ros_distro, s.replace('/', '__'))
+        if options.pr:
+            job_name = "pr-%s-%s" % (ros_distro, s.replace('/', '__'))
+        else:
+            job_name = "devel-%s-%s" % (ros_distro, s.replace('/', '__'))
         if conf['type'] == 'svn':
             conf['version'] = ''
         if conf['version'] is None:
@@ -94,11 +98,18 @@ def main():
 
         additional_publishers = pkg_resources.resource_string('jenkins_tools', 'resources/templates/publisher_extend_notification_recipients.xml')
 
-        jenkins_tools.run_jenkins_vcs(jenkins_instance, '$UBUNTU_PARAM', '$ARCH_PARAM',
-                                      job_name, 'marc@hanheide.net',
-                                      conf['type'], conf['url'], conf['version'],
-                                      'devel', [ros_distro, s], info['username'],
-                                      {'UBUNTU_PARAM': ubuntu_distro[ros_distro], 'ARCH_PARAM': arch}, priority=940, timeout=conf.get('timeout'), additional_publishers=additional_publishers)
+        if options.pr:
+            jenkins_tools.run_jenkins_vcs(jenkins_instance, '$UBUNTU_PARAM', '$ARCH_PARAM',
+                                          job_name, 'marc@hanheide.net',
+                                          conf['type'], conf['url'], conf['version'],
+                                          'devel', [ros_distro, s], info['username'],
+                                          {'UBUNTU_PARAM': ubuntu_distro[ros_distro], 'ARCH_PARAM': arch}, priority=940, timeout=conf.get('timeout'), additional_publishers=additional_publishers, trigger='pr', refspec='+refs/pull/*:refs/remotes/origin/pr/*')
+        else:
+            jenkins_tools.run_jenkins_vcs(jenkins_instance, '$UBUNTU_PARAM', '$ARCH_PARAM',
+                                          job_name, 'marc@hanheide.net',
+                                          conf['type'], conf['url'], conf['version'],
+                                          'devel', [ros_distro, s], info['username'],
+                                          {'UBUNTU_PARAM': ubuntu_distro[ros_distro], 'ARCH_PARAM': arch}, priority=940, timeout=conf.get('timeout'), additional_publishers=additional_publishers)
         devel_jobs.append(job_name)
 
     # run jobs right now

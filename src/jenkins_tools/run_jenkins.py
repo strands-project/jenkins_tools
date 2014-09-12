@@ -44,6 +44,8 @@ def _update_jenkins_job(jenkins_instance, jenkins_conf, ubuntu_distro, arch, job
     params['SCRIPT_ARGS'] = ' '.join(script_args)
     params['NODE'] = params['SCRIPT']
 
+
+
     params['TRIGGER'] = jenkins_conf['triggers']['none']
     params['VCS'] = jenkins_conf['vcs']['none']
 
@@ -105,11 +107,12 @@ def run_jenkins_periodic(jenkins_instance, ubuntu_distro, arch, job_name, email,
 
 
 # configure a job with vcs trigger
-def run_jenkins_vcs(jenkins_instance, ubuntu_distro, arch, job_name, email, vcs, uri, branch, script, script_args, user_name, matrix=None, priority=None, timeout=None, additional_publishers=''):
+def run_jenkins_vcs(jenkins_instance, ubuntu_distro, arch, job_name, email, vcs, uri, branch, script, script_args, user_name, matrix=None, priority=None, timeout=None, additional_publishers='', refspec='+refs/heads/*:refs/remotes/origin/*', trigger='vcs'):
     jc = _get_jenkins_conf()
     params = {}
     params['EMAIL_COMMITTER'] = 'true'
-    params['TRIGGER'] = jc['triggers']['vcs']
+    params['TRIGGER'] = jc['triggers'][trigger].replace('@(JOB_NAME)', job_name)
     params['ADDITIONAL_PUBLISHERS'] = additional_publishers
-    params['VCS'] = jc['vcs'][vcs].replace('@(URI)', uri).replace('@(BRANCH)', branch)
+    params['VCS'] = jc['vcs'][vcs].replace('@(URI)', uri).replace('@(BRANCH)', branch).replace('@(REFSPEC)', refspec)
+    params['PROJECT_URL'] = uri.replace('.git','')
     _update_jenkins_job(jenkins_instance, jc, ubuntu_distro, arch, job_name, email, script, script_args, user_name, params, matrix=matrix, priority=priority, timeout=timeout)
