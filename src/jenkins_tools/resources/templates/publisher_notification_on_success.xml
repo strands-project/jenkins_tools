@@ -1,5 +1,5 @@
     <hudson.plugins.emailext.ExtendedEmailPublisher plugin="email-ext@2.27.1">
-      <recipientList>ros-buildfarm-prerelease@googlegroups.com $EMAIL_PARAM</recipientList>
+      <recipientList>strands-buildfarm@googlegroups.com $EMAIL_PARAM</recipientList>
       <configuredTriggers>
         <hudson.plugins.emailext.plugins.trigger.SuccessTrigger>
           <email>
