@@ -101,7 +101,7 @@ def main():
         if options.pr:
             jenkins_tools.run_jenkins_vcs(jenkins_instance, '$UBUNTU_PARAM', '$ARCH_PARAM',
                                           job_name, 'strands-buildfarm@googlegroups.com',
-                                          conf['type'], conf['url'], conf['version'],
+                                          conf['type'], conf['url'], '${sha1}',
                                           'devel', [ros_distro, s], info['username'],
                                           {'UBUNTU_PARAM': ubuntu_distro[ros_distro], 'ARCH_PARAM': arch}, priority=940, timeout=conf.get('timeout'), additional_publishers=additional_publishers, trigger='pr', refspec='+refs/pull/*:refs/remotes/origin/pr/*')
         else:
