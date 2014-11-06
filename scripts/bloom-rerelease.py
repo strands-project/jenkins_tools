@@ -67,7 +67,7 @@ class Releaser:
             return ''
 
     def bloom_release(self):
-        self.call('~',
+        self.call('/',
             [
                 'bloom-release',
                 '-t', self.track, '-r', self.distro_name, '--noweb',  '-y', '-s'
@@ -78,11 +78,20 @@ class Releaser:
         upstream_url = self.repo.source_repository.url
         try:
             self.call(upstream_dir, ['git', 'clone', upstream_url, upstream_dir])
-            self.call(upstream_dir, ['catkin_generate_changelog', '-y', '-a'])
-            self.call(upstream_dir, ['git', 'add' ,'`find -name CHANGELOG.rst`'])
+            try:
+                self.call(upstream_dir, ['catkin_generate_changelog', '-y',  '-a'])
+            except:
+                self.call(upstream_dir, ['catkin_generate_changelog', '-y'])
+
+            for root, dirs, files in os.walk(upstream_dir):
+                if 'CHANGELOG.rst' in files:
+                    cl_path = '%s/CHANGELOG.rst' % root
+                    self.call(upstream_dir, ['git', 'add', cl_path])
             self.call(upstream_dir, ['git', 'commit' ,'-a', '-m', 'updated changelogs'])
-            #self.call(upstream_dir, ['catkin_prepare_release', '-y', '--bump', self.bump])
-            self.call('~', ['rm', '-rf', upstream_dir])
+
+
+            self.call(upstream_dir, ['catkin_prepare_release', '-y', '--bump', self.bump])
+            self.call('/', ['rm', '-rf', upstream_dir])
         except:
             print 'error in preparing upstream at %s' % upstream_dir
             raise
@@ -94,4 +103,4 @@ if __name__ == "__main__":
     r = Releaser(args.repo_name, args.rosdistro, args.track, args.bump)
 
     r.prepare_upstream()
-    #r.bloom_release()
+    r.bloom_release()
