@@ -24,7 +24,7 @@ def parse_options():
         help='A read-only git buildpackage repo uri.',
     )
     parser.add_argument('rosdistro', help='Which rosdistro to operate on')
-    parser.add_argument('track', help='Which track to release to')
+    parser.add_argument('--track', help='Also run bloom after preparing upstream with this track', default=None)
     parser.add_argument('--bump',
                         help='Version number to bump. Default: %(default)s',
                         default='patch')
@@ -103,4 +103,5 @@ if __name__ == "__main__":
     r = Releaser(args.repo_name, args.rosdistro, args.track, args.bump)
 
     r.prepare_upstream()
-    r.bloom_release()
+    if args.track is not None:
+        r.bloom_release()
