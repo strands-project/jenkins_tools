@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import jenkins
 import argparse
 import os
 import sys
@@ -41,6 +40,7 @@ class Releaser:
         self.track = track
         self.distro_name = distro_name
         self.bump = bump
+        self.pretend = False
 
         try:
             index = get_index(get_index_url())
@@ -55,17 +55,19 @@ class Releaser:
 
     def call(self, working_dir, command, pipe=None):
         print('+ cd %s && ' % working_dir + ' '.join(command))
-        process = Popen(command, stdout=pipe, stderr=pipe, cwd=working_dir)
-        output, unused_err = process.communicate()
-        retcode = process.poll()
-        if retcode:
-            raise CalledProcessError(retcode, command)
-        if pipe:
-            return output
+        if not self.pretend:
+            process = Popen(command, stdout=pipe, stderr=pipe, cwd=working_dir)
+            output, unused_err = process.communicate()
+            retcode = process.poll()
+            if retcode:
+                raise CalledProcessError(retcode, command)
+            if pipe:
+                return output
+        else:
+            return ''
 
     def bloom_release(self):
-        empty_dir = mkdtemp()
-        self.call(empty_dir,
+        self.call('~',
             [
                 'bloom-release',
                 '-t', self.track, '-r', self.distro_name, '--noweb',  '-y', '-s'
@@ -76,10 +78,11 @@ class Releaser:
         upstream_url = self.repo.source_repository.url
         try:
             self.call(upstream_dir, ['git', 'clone', upstream_url, upstream_dir])
-            self.call(upstream_dir, ['catkin_generate_changelog', '-y'])
+            self.call(upstream_dir, ['catkin_generate_changelog', '-y', '-a'])
+            self.call(upstream_dir, ['git', 'add' ,'`find -name CHANGELOG.rst`'])
             self.call(upstream_dir, ['git', 'commit' ,'-a', '-m', 'updated changelogs'])
-            self.call(upstream_dir, ['catkin_prepare_release', '-y', '--bump', self.bump])
-            self.call('/', ['rm', '-rf', upstream_dir])
+            #self.call(upstream_dir, ['catkin_prepare_release', '-y', '--bump', self.bump])
+            self.call('~', ['rm', '-rf', upstream_dir])
         except:
             print 'error in preparing upstream at %s' % upstream_dir
             raise
@@ -91,4 +94,4 @@ if __name__ == "__main__":
     r = Releaser(args.repo_name, args.rosdistro, args.track, args.bump)
 
     r.prepare_upstream()
-
+    #r.bloom_release()
