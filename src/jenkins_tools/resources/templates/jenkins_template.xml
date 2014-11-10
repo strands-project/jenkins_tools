@@ -32,7 +32,7 @@
     <hudson.tasks.Shell>
       <command>
 export JENKINS_SCRIPTS_REPOSITORY_URL=https://github.com/strands-project/jenkins_scripts.git
-boptimist.py --retry 2 -- bash run_chroot_local @(UBUNTU_DISTRO) @(ARCH) $WORKSPACE @(SCRIPT) @(SCRIPT_ARGS)
+boptimist.py --retry 3 -- bash run_chroot_local @(UBUNTU_DISTRO) @(ARCH) $WORKSPACE @(SCRIPT) @(SCRIPT_ARGS)
      </command>
     </hudson.tasks.Shell>
   </builders>
