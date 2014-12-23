@@ -111,8 +111,8 @@ def run_jenkins_vcs(jenkins_instance, ubuntu_distro, arch, job_name, email, vcs,
     jc = _get_jenkins_conf()
     params = {}
     params['EMAIL_COMMITTER'] = 'true'
-    params['TRIGGER'] = jc['triggers'][trigger].replace('@(JOB_NAME)', job_name)
+    params['TRIGGER'] = jc['triggers'][trigger].replace('@(JOB_NAME)', job_name).replace('@(PRBRANCH)', prbranch)
     params['ADDITIONAL_PUBLISHERS'] = additional_publishers
-    params['VCS'] = jc['vcs'][vcs].replace('@(URI)', uri).replace('@(BRANCH)', branch).replace('@(REFSPEC)', refspec).replace('@(PRBRANCH)', prbranch)
+    params['VCS'] = jc['vcs'][vcs].replace('@(URI)', uri).replace('@(BRANCH)', branch).replace('@(REFSPEC)', refspec)
     params['PROJECT_URL'] = uri.replace('.git','')
     _update_jenkins_job(jenkins_instance, jc, ubuntu_distro, arch, job_name, email, script, script_args, user_name, params, matrix=matrix, priority=priority, timeout=timeout)
