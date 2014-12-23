@@ -103,7 +103,7 @@ def main():
                                           job_name, 'strands-buildfarm@googlegroups.com',
                                           conf['type'], conf['url'], '${sha1}',
                                           'devel', ['--repo-path', '${WORKSPACE}', ros_distro, s], info['username'],
-                                          None, priority=940, timeout=conf.get('timeout'), additional_publishers=additional_publishers, trigger='pr', refspec='+refs/pull/*:refs/remotes/origin/pr/*')
+                                          None, priority=940, timeout=conf.get('timeout'), additional_publishers=additional_publishers, trigger='pr', refspec='+refs/pull/*:refs/remotes/origin/pr/*', prbranch=conf['version'])
         else:
             jenkins_tools.run_jenkins_vcs(jenkins_instance, '$UBUNTU_PARAM', '$ARCH_PARAM',
                                           job_name, 'strands-buildfarm@googlegroups.com',
