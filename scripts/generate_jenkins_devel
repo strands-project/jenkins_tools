@@ -99,7 +99,7 @@ def main():
         additional_publishers = pkg_resources.resource_string('jenkins_tools', 'resources/templates/publisher_extend_notification_recipients.xml')
 
         if options.pr:
-            jenkins_tools.run_jenkins_vcs(jenkins_instance, 'precise', 'amd64',
+            jenkins_tools.run_jenkins_vcs(jenkins_instance, ubuntu_distro[ros_distro], arch,
                                           job_name, 'strands-buildfarm@googlegroups.com',
                                           conf['type'], conf['url'], '${sha1}',
                                           'devel', ['--repo-path', '${WORKSPACE}', ros_distro, s], info['username'],
