@@ -138,7 +138,8 @@ class Releaser:
             try:
                 self.call(upstream_dir, ['catkin_generate_changelog', '-y',  '-a'])
             except:
-                self.call(upstream_dir, ['catkin_generate_changelog', '-y'])
+                pass
+            self.call(upstream_dir, ['catkin_generate_changelog', '-y'])
 
             for root, dirs, files in os.walk(upstream_dir):
                 if 'CHANGELOG.rst' in files:
