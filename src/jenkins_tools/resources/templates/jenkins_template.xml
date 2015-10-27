@@ -50,7 +50,14 @@ boptimist.py --retry 3 -- bash run_chroot_local @(UBUNTU_DISTRO) @(ARCH) $WORKSP
       <sendToIndividuals>@(EMAIL_COMMITTER)</sendToIndividuals>
     </hudson.tasks.Mailer>
   </publishers>
+
   <buildWrappers>
     @(TIMEOUT)
+    <hudson.plugins.xvnc.Xvnc plugin="xvnc@1.21">
+      <takeScreenshot>true</takeScreenshot>
+      <useXauthority>true</useXauthority>
+    </hudson.plugins.xvnc.Xvnc>
+
   </buildWrappers>
+
 </@(PROJECT)>
