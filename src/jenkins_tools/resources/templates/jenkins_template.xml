@@ -42,7 +42,7 @@ kill &quot;$FFMPEG_PID&quot; || true
 
 sleep 2
 
-kill -9  &quot;$FFMPEG_PID&quot; || true</command>
+kill -9  &quot;$FFMPEG_PID&quot; || true
         
      </command>
     </hudson.tasks.Shell>
