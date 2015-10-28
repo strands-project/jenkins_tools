@@ -47,7 +47,7 @@ def main():
     if options.starts_with:
         jobs = [j for j in jobs if j[:len(options.starts_with)] == options.starts_with]
     if options.ends_with:
-        jobs = [j for j in jobs if j[-len(options.starts_with):] == options.ends_with]
+        jobs = [j for j in jobs if j[-len(options.ends_with):] == options.ends_with]
     if options.contains:
         jobs = [j for j in jobs if options.contains in j]
 
