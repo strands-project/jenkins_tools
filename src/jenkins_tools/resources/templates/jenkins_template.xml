@@ -31,8 +31,19 @@
   <builders>
     <hudson.tasks.Shell>
       <command>
+avconv -f x11grab  -r 1 -s 1024x768 -i $DISPLAY.0+nomouse -y  Xvnc.mp4 &amp;
+
+FFMPEG_PID=&quot;$!&quot;
+
 export JENKINS_SCRIPTS_REPOSITORY_URL=https://github.com/strands-project/jenkins_scripts.git
 boptimist.py --retry 3 -- bash run_chroot_local @(UBUNTU_DISTRO) @(ARCH) $WORKSPACE @(SCRIPT) @(SCRIPT_ARGS)
+
+kill &quot;$FFMPEG_PID&quot; || true
+
+sleep 2
+
+kill -9  &quot;$FFMPEG_PID&quot; || true</command>
+        
      </command>
     </hudson.tasks.Shell>
   </builders>
@@ -49,6 +60,14 @@ boptimist.py --retry 3 -- bash run_chroot_local @(UBUNTU_DISTRO) @(ARCH) $WORKSP
       <dontNotifyEveryUnstableBuild>false</dontNotifyEveryUnstableBuild>
       <sendToIndividuals>@(EMAIL_COMMITTER)</sendToIndividuals>
     </hudson.tasks.Mailer>
+    <hudson.tasks.ArtifactArchiver>
+      <artifacts>Xvnc.mp4</artifacts>
+      <allowEmptyArchive>true</allowEmptyArchive>
+      <onlyIfSuccessful>false</onlyIfSuccessful>
+      <fingerprint>false</fingerprint>
+      <defaultExcludes>true</defaultExcludes>
+    </hudson.tasks.ArtifactArchiver>
+
   </publishers>
 
   <buildWrappers>
