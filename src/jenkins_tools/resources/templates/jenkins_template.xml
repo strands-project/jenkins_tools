@@ -73,7 +73,7 @@ kill -9  &quot;$FFMPEG_PID&quot; || true
   <buildWrappers>
     @(TIMEOUT)
     <hudson.plugins.xvnc.Xvnc plugin="xvnc@1.21">
-      <takeScreenshot>true</takeScreenshot>
+      <takeScreenshot>false</takeScreenshot>
       <useXauthority>true</useXauthority>
     </hudson.plugins.xvnc.Xvnc>
 
