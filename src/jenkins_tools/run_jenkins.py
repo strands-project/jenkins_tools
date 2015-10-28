@@ -107,11 +107,11 @@ def run_jenkins_periodic(jenkins_instance, ubuntu_distro, arch, job_name, email,
 
 
 # configure a job with vcs trigger
-def run_jenkins_vcs(jenkins_instance, ubuntu_distro, arch, job_name, email, vcs, uri, branch, script, script_args, user_name, matrix=None, priority=None, timeout=None, additional_publishers='', refspec='+refs/heads/*:refs/remotes/origin/*', trigger='vcs'):
+def run_jenkins_vcs(jenkins_instance, ubuntu_distro, arch, job_name, email, vcs, uri, branch, script, script_args, user_name, matrix=None, priority=None, timeout=None, additional_publishers='', refspec='+refs/heads/*:refs/remotes/origin/*', trigger='gh', prbranch=''):
     jc = _get_jenkins_conf()
     params = {}
     params['EMAIL_COMMITTER'] = 'true'
-    params['TRIGGER'] = jc['triggers'][trigger].replace('@(JOB_NAME)', job_name)
+    params['TRIGGER'] = jc['triggers'][trigger].replace('@(JOB_NAME)', job_name).replace('@(PRBRANCH)', prbranch)
     params['ADDITIONAL_PUBLISHERS'] = additional_publishers
     params['VCS'] = jc['vcs'][vcs].replace('@(URI)', uri).replace('@(BRANCH)', branch).replace('@(REFSPEC)', refspec)
     params['PROJECT_URL'] = uri.replace('.git','')
