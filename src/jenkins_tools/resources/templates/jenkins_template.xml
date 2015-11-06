@@ -31,7 +31,7 @@
   <builders>
     <hudson.tasks.Shell>
       <command>
-avconv -f x11grab  -r 1 -s 1024x768 -i $DISPLAY.0+nomouse -y  Xvnc.mp4 &gt;$WORKSPACE/avconv.log 2&gt;&amp;1 &amp;
+avconv -f x11grab  -r 3 -s 1024x768 -i $DISPLAY.0+nomouse -y  Xvnc.mp4 &gt;$WORKSPACE/avconv.log 2&gt;&amp;1 &amp;
 
 FFMPEG_PID=&quot;$!&quot;
 
