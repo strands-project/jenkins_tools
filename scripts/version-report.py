@@ -44,10 +44,13 @@ for distro in reversed(sorted(i.distributions.keys())):
         tracks_yaml = rosdistro.loader.load_url(tracks_url)
         #print(tracks_yaml)
 
-        tracks_data = yaml.load(tracks_yaml)
-        upstream_url = tracks_data['tracks'][distro]['vcs_uri']
-        # ignore local upstream path
-        if upstream_url.startswith('/'):
+        try:
+            tracks_data = yaml.load(tracks_yaml)
+            upstream_url = tracks_data['tracks'][distro]['vcs_uri']
+            # ignore local upstream path
+            if upstream_url.startswith('/'):
+                continue
+        except:
             continue
 
         last_version=tracks_data['tracks'][distro]['last_version']
